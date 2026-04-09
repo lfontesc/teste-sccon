@@ -20,7 +20,7 @@ Apesar das novas versões do angular ter mudado sua estrutura abandonando os mod
 
 ```bash
 # Clone o repositório
-git clone <url-do-repositorio>
+git clone https://github.com/lfontesc/teste-sccon.git
 cd sccon-app
 
 # Instale as dependências
