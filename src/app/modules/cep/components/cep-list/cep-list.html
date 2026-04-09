@@ -1,0 +1,54 @@
+<table
+	mat-table
+	[dataSource]="dataSource()"
+	class="cep-table"
+	id="cep-list-table"
+	aria-label="Lista de endereços buscados"
+>
+	<ng-container matColumnDef="cep">
+		<th mat-header-cell *matHeaderCellDef scope="col">CEP</th>
+		<td mat-cell *matCellDef="let row">{{ row.cep }}</td>
+	</ng-container>
+
+	<ng-container matColumnDef="endereco">
+		<th mat-header-cell *matHeaderCellDef scope="col">Endereço</th>
+		<td mat-cell *matCellDef="let row">{{ row.endereco }}</td>
+	</ng-container>
+
+	<ng-container matColumnDef="data">
+		<th mat-header-cell *matHeaderCellDef scope="col">Data</th>
+		<td mat-cell *matCellDef="let row">
+			<time [attr.datetime]="row.data">{{ row.data }}</time>
+		</td>
+	</ng-container>
+
+	<ng-container matColumnDef="acoes">
+		<th mat-header-cell *matHeaderCellDef scope="col">Ações</th>
+		<td mat-cell *matCellDef="let row" [attr.data-cep]="row.cep">
+			<button
+				mat-icon-button
+				(click)="verDetalhes(row)"
+				[attr.aria-label]="'Ver detalhes do CEP ' + row.cep"
+				title="Ver detalhes"
+			>
+				<ng-icon name="featherEye" />
+			</button>
+			<button
+				mat-icon-button
+				(click)="excluir(row.cep)"
+				[attr.aria-label]="'Excluir CEP ' + row.cep"
+				title="Excluir"
+			>
+				<ng-icon name="featherTrash" />
+			</button>
+		</td>
+	</ng-container>
+
+	<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+	<tr mat-row *matRowDef="let row; columns: displayedColumns" [attr.data-cep]="row.cep"></tr>
+	<tr class="mat-mdc-row" *matNoDataRow>
+		<td [attr.colspan]="displayedColumns.length" class="empty-message" role="cell">
+			Nenhum endereço buscado
+		</td>
+	</tr>
+</table>

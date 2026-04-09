@@ -1,0 +1,32 @@
+<mat-toolbar class="header-toolbar" role="banner">
+	<a routerLink="/home" class="header-logo" aria-label="SCCON - Ir para página inicial">
+		<img src="scconlogo.svg" alt="Logo SCCON" height="52" />
+		<span class="header-logo-name">SCCON</span>
+	</a>
+
+	<span class="header-spacer"></span>
+
+	<nav class="header-menu" aria-label="Menu principal">
+		@for (item of menuItems; track item.label) {
+			@if (item.children) {
+				<button
+					mat-button
+					[matMenuTriggerFor]="menu"
+					[class.active]="isMenuItemActive(item)"
+					aria-haspopup="true"
+				>
+					{{ item.label }}
+				</button>
+				<mat-menu #menu="matMenu">
+					@for (child of item.children; track child.label) {
+						<a mat-menu-item [routerLink]="child.url">{{ child.label }}</a>
+					}
+				</mat-menu>
+			} @else {
+				<a mat-button [routerLink]="item.url" routerLinkActive="active">
+					{{ item.label }}
+				</a>
+			}
+		}
+	</nav>
+</mat-toolbar>

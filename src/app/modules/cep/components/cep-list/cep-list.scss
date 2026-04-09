@@ -1,0 +1,33 @@
+@use "../../../../../styles/variables" as v;
+
+.empty-message {
+	text-align: center;
+	color: v.$color-text-muted;
+	padding: 1.5em 0;
+}
+
+.cep-table {
+	width: 60%;
+	margin: 0 auto;
+
+	@media (max-width: 768px) {
+		width: 90%;
+	}
+
+	@media (max-width: 480px) {
+		width: 100%;
+	}
+
+	tr.mat-mdc-row:nth-child(odd) {
+		background-color: v.$color-row-stripe;
+	}
+
+	tr.mat-mdc-row {
+		transition: background-color v.$transition-fast;
+
+		&:hover {
+			background-color: v.$color-row-hover;
+			cursor: pointer;
+		}
+	}
+}

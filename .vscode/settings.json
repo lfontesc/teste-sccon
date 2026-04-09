@@ -1,0 +1,64 @@
+{
+	"editor.fontLigatures": true,
+	// "editor.fontSize": 13,
+	// "editor.lineHeight": 24,
+	"files.autoSave": "off",
+	"editor.insertSpaces": true,
+	"editor.tabSize": 2,
+	"editor.detectIndentation": false,
+	"type.updateImportsOnFileMove.enabled": "always",
+	"editor.formatOnSave": true,
+	"editor.formatOnSaveMode": "file",
+	"editor.autoIndent": "full",
+	"editor.autoClosingBrackets": "always",
+	"editor.autoClosingQuotes": "always",
+	"editor.formatOnPaste": true,
+	"editor.formatOnType": true,
+	"material-icon-theme.activeIconPack": "nest",
+	"explorer.compactFolders": false,
+	"diffEditor.ignoreTrimWhitespace": false,
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": "explicit"
+	},
+	"workbench.startupEditor": "none",
+	"explorer.confirmDelete": false,
+	"extensions.ignoreRecommendations": true,
+	"typescript.updateImportsOnFileMove.enabled": "always",
+	"javascript.updateImportsOnFileMove.enabled": "always",
+	"[type]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"emmet.syntaxProfiles": {
+		"javacript": "jsx"
+	},
+	"emmet.includeLanguages": {
+		"javacript": "javareact"
+	},
+	"json.schemas": [],
+	"[html]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[less]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[css]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[scss]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"git.openRepositoryInParentFolders": "never",
+	// // Aplica linhas verticais para lembrar de quebrar linha em códigos muito grandes
+	// "editor.rulers": [90, 140]
+	"terminal.integrated.fontFamily": "monospace",
+	"workbench.iconTheme": "eq-material-theme-icons"
+}

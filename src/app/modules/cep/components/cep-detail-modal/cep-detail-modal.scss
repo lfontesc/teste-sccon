@@ -1,0 +1,20 @@
+.detail-list {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0.75em 2em;
+	margin: 0;
+	min-width: 400px;
+}
+
+.detail-item {
+	dt {
+		font-size: 0.75rem;
+		color: #888;
+		margin-bottom: 2px;
+	}
+
+	dd {
+		margin: 0;
+		font-weight: 500;
+	}
+}

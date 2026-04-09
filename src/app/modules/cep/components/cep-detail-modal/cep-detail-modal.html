@@ -1,0 +1,16 @@
+<h2 mat-dialog-title id="cep-detail-title">Detalhes do Endereço</h2>
+
+<mat-dialog-content aria-labelledby="cep-detail-title">
+	<dl class="detail-list" aria-label="Informações do endereço">
+		@for (campo of campos; track campo.label) {
+			<div class="detail-item" [attr.data-field]="campo.label">
+				<dt>{{ campo.label }}</dt>
+				<dd>{{ campo.valor }}</dd>
+			</div>
+		}
+	</dl>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+	<button mat-button mat-dialog-close aria-label="Fechar detalhes do endereço">Fechar</button>
+</mat-dialog-actions>

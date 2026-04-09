@@ -1,0 +1,23 @@
+<form id="cep-search-form" class="cep-search-form" role="search" aria-label="Busca por CEP" (submit)="$event.preventDefault()">
+	<mat-form-field appearance="outline">
+		<mat-label>Busca por CEP</mat-label>
+		<input
+			id="cep-input"
+			matInput
+			[formControl]="cepControl"
+			mask="00000-000"
+			placeholder="00000-000"
+			(keyup.enter)="buscar()"
+			autocomplete="postal-code"
+			inputmode="numeric"
+		/>
+		<mat-error>
+			@if (cepControl.hasError('required')) { CEP é obrigatório }
+			@else if (cepControl.hasError('cepInvalido')) { CEP inválido — digite os 8 dígitos }
+		</mat-error>
+	</mat-form-field>
+
+	<button mat-flat-button type="button" class="btn-buscar" aria-label="Buscar endereço pelo CEP informado" (click)="buscar()">
+		Buscar
+	</button>
+</form>
