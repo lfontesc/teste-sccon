@@ -1,13 +1,13 @@
-import { Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, output } from "@angular/core";
 import { AbstractControl, FormControl, ReactiveFormsModule, ValidationErrors, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
-import { CepStorageService } from "@app/core/services/cep-storage.service";
-import { CepService } from "@app/core/services/cep.service";
-import { ToastService } from "@app/core/services/toast.service";
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { NgxMaskDirective } from "ngx-mask";
-import { catchError, EMPTY, map, switchMap } from "rxjs";
+
+import { CepState } from "../../states/cep.state";
+
 
 function cepValidator(control: AbstractControl): ValidationErrors | null {
 	const digits = (control.value ?? "").replace(/\D/g, "");
@@ -21,68 +21,26 @@ function cepValidator(control: AbstractControl): ValidationErrors | null {
 		MatFormFieldModule,
 		MatInputModule,
 		MatButtonModule,
+		MatProgressSpinner,
 		NgxMaskDirective
 	],
 	templateUrl: "./cep-search.html",
-	styleUrl: "./cep-search.scss"
+	styleUrl: "./cep-search.scss",
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CepSearch {
+	private state = inject(CepState);
+
 	cepControl = new FormControl("", [Validators.required, cepValidator]);
+	buscar = output<string>();
+	loading = this.state.loading;
 
-	private cepService = inject(CepService);
-	private cepStorageService = inject(CepStorageService);
-	private toast = inject(ToastService);
-
-	buscar() {
+	submit(): void {
+		if (this.loading()) return;
 		this.cepControl.markAsTouched();
-		if (this.cepControl.invalid) {
-			this.toast.warning("Por favor, digite um CEP válido antes de buscar.", "CEP inválido");
-			return;
-		}
+		if (this.cepControl.invalid) return;
 
-		const cep = this.cepControl.value!;
-
-		this.cepService
-			.buscar(cep)
-			.pipe(
-				catchError(() => {
-					this.toast.error("Não foi possível consultar o CEP. Tente novamente.", "Erro na consulta");
-					return EMPTY;
-				}),
-				switchMap((resultado) => {
-					if (resultado.erro) {
-						this.toast.warning("CEP não encontrado. Verifique o número e tente novamente.", "CEP inválido");
-						return EMPTY;
-					}
-
-					const partes = [
-						resultado.logradouro,
-						resultado.bairro,
-						resultado.localidade,
-						resultado.uf
-					]
-						.filter(Boolean)
-						.join(", ");
-
-					return this.cepStorageService
-						.adicionar({
-							cep: resultado.cep,
-							endereco: partes,
-							data: new Date().toLocaleDateString("pt-BR"),
-							detalhes: resultado
-						})
-						.pipe(
-							map(() => resultado.cep),
-							catchError(() => {
-								this.toast.error("Não foi possível salvar o endereço.", "Erro ao salvar");
-								return EMPTY;
-							})
-						);
-				})
-			)
-			.subscribe((cep) => {
-				this.cepControl.reset();
-				this.toast.success(`${cep} adicionado ao topo da lista de endereços.`, "CEP encontrado!");
-			});
+		this.buscar.emit(this.cepControl.value!);
+		this.cepControl.reset();
 	}
 }

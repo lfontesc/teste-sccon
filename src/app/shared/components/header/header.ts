@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatToolbarModule } from "@angular/material/toolbar";
@@ -16,7 +16,8 @@ import { MENU_ITEMS, NavMenuItem } from "@app/core/data/data";
 		MatToolbarModule
 	],
 	templateUrl: "./header.html",
-	styleUrl: "./header.scss"
+	styleUrl: "./header.scss",
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Header {
 	private router = inject(Router);

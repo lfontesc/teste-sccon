@@ -5,7 +5,11 @@
 	</header>
 
 	<section class="page-content" aria-label="Busca e listagem de endereços">
-		<app-cep-search />
-		<app-cep-list />
+		<app-cep-search (buscar)="facade.buscar($event)" />
+		<app-cep-list
+			[enderecos]="enderecos()"
+			(excluir)="facade.remover($event)"
+			(verDetalhes)="facade.abrirDetalhes($event)"
+		/>
 	</section>
 </article>

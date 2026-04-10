@@ -7,7 +7,7 @@
 			[formControl]="cepControl"
 			mask="00000-000"
 			placeholder="00000-000"
-			(keyup.enter)="buscar()"
+			(keyup.enter)="submit()"
 			autocomplete="postal-code"
 			inputmode="numeric"
 		/>
@@ -17,7 +17,14 @@
 		</mat-error>
 	</mat-form-field>
 
-	<button mat-flat-button type="button" class="btn-buscar" aria-label="Buscar endereço pelo CEP informado" (click)="buscar()">
-		Buscar
+	<button mat-flat-button type="button" class="btn-buscar"
+		[attr.aria-label]="loading() ? 'Buscando...' : 'Buscar endereço pelo CEP informado'"
+		(click)="submit()"
+		[disabled]="loading()">
+		@if (loading()) {
+			<mat-spinner diameter="20" />
+		} @else {
+			Buscar
+		}
 	</button>
 </form>

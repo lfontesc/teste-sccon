@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from "@angular/core";
 import { NavigationEnd, Router, RouterLink } from "@angular/router";
 import { filter } from "rxjs/operators";
 
@@ -8,7 +8,8 @@ import { BreadcrumbItem, ROUTE_BREADCRUMBS } from "@app/core/data/data";
 	selector: "app-breadcrumb",
 	imports: [RouterLink],
 	templateUrl: "./breadcrumb.html",
-	styleUrl: "./breadcrumb.scss"
+	styleUrl: "./breadcrumb.scss",
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Breadcrumb implements OnInit {
 	private router = inject(Router);

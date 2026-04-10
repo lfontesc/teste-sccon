@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
 import { ViaCepResponse } from "@app/core/interfaces/cep";
@@ -27,7 +27,8 @@ const LABELS: Record<string, string> = {
 	selector: "app-cep-detail-modal",
 	imports: [MatDialogModule, MatButtonModule],
 	templateUrl: "./cep-detail-modal.html",
-	styleUrl: "./cep-detail-modal.scss"
+	styleUrl: "./cep-detail-modal.scss",
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CepDetailModal {
 	data = inject<DialogData>(MAT_DIALOG_DATA);

@@ -28,13 +28,15 @@ export class CepStorageService {
 
 	adicionar(entry: CepEntry): Observable<void> {
 		const { id: _id, ...payload } = entry;
-		const existente = this._enderecos
-			.getValue()
-			.find((e) => e.cep === entry.cep);
+		const existente = this._enderecos.getValue().find((e) => e.cep === entry.cep);
 
-		const post$ = this.http
-			.post<CepEntry>(this.baseUrl, payload)
-			.pipe(switchMap(() => this.carregar()));
+		const post$ = this.http.post<CepEntry>(this.baseUrl, payload).pipe(
+			tap((saved) => {
+				const sem = this._enderecos.getValue().filter((e) => e.cep !== entry.cep);
+				this._enderecos.next([saved, ...sem]);
+			}),
+			map(() => void 0)
+		);
 
 		if (existente?.id) {
 			return this.http
@@ -49,9 +51,13 @@ export class CepStorageService {
 		const entry = this._enderecos.getValue().find((e) => e.cep === cep);
 		if (!entry?.id) return of(void 0);
 
-		return this.http
-			.delete(`${this.baseUrl}/${entry.id}`)
-			.pipe(switchMap(() => this.carregar()));
+		return this.http.delete(`${this.baseUrl}/${entry.id}`).pipe(
+			tap(() => {
+				const sem = this._enderecos.getValue().filter((e) => e.cep !== cep);
+				this._enderecos.next(sem);
+			}),
+			map(() => void 0)
+		);
 	}
 
 	private carregar(): Observable<void> {
