@@ -9,6 +9,21 @@ Apesar das novas versões do angular ter mudado sua estrutura abandonando os mod
 
 ---
 
+## Principais Tecnologias utilizadas
+
+| Ferramenta / Framework | Versão |
+|------------------------|--------|
+| Angular | 21.2.0 |
+| Angular Material | 21.2.6 |
+| ngx-toastr | 20.0.5 |
+| ngx-mask | 21.0.1 |
+| json-server | 1.0.0-beta.15 |
+| RxJS | 7.8.x |
+| TypeScript | 5.9.x |
+
+
+---
+
 ## Requisitos
 
 - [Node.js](https://nodejs.org) >= 18
@@ -20,7 +35,7 @@ Apesar das novas versões do angular ter mudado sua estrutura abandonando os mod
 
 ```bash
 # Clone o repositório
-git clone <url-do-repositorio>
+git clone https://github.com/lfontesc/teste-sccon.git
 cd sccon-app
 
 # Instale as dependências
@@ -59,21 +74,34 @@ API disponível em: `http://localhost:3000/enderecos`
 src/
 ├── app/
 │   ├── core/
+│   │   ├── interfaces/                     # Interfaces TypeScript (ex.: ViaCepResponse)
+│   │   ├── mocks/
+│   │   │   └── cep.mock.ts                 # Dados mock compartilhados entre specs
 │   │   └── services/
-│   │       ├── cep.service.ts          # Integração com ViaCEP
-│   │       ├── cep-storage.service.ts  # Persistência via JSON Server
-│   │       └── toast.service.ts        # Wrapper centralizado do Toastr
+│   │       ├── cep.service.ts              # Integração com ViaCEP
+│   │       ├── cep-storage.service.ts      # Persistência via JSON Server
+│   │       └── toast.service.ts            # Wrapper centralizado do Toastr
 │   ├── modules/
-│   │   ├── main/                       # Layout principal com header e router-outlet
-│   │   ├── home/                       # Página inicial
-│   │   └── cep/                        # Módulo de busca e listagem de endereços
+│   │   ├── main/                           # Layout principal com header e router-outlet
+│   │   ├── home/                           # Página inicial
+│   │   └── cep/                            # Módulo de busca e listagem de endereços
+│   │       ├── components/                 # Componentes apresentacionais
+│   │       │   ├── cep-search/             # Formulário de busca por CEP
+│   │       │   ├── cep-list/               # Tabela de endereços consultados
+│   │       │   └── cep-detail-modal/       # Modal com detalhes do endereço
+│   │       ├── facades/
+│   │       │   └── cep.facade.ts           # Orquestra serviços, estado e notificações
+│   │       ├── pages/
+│   │       │   └── cep/                    # Container (página) da busca de CEP
+│   │       └── states/
+│   │           └── cep.state.ts            # Estado de loading do módulo (Signal)
 │   └── shared/
 │       └── components/
-│           └── header/                 # Header com navegação e logo
-├── environments/                       # Configurações por ambiente
+│           └── header/                     # Header com navegação e logo
+├── environments/                           # Configurações por ambiente
 └── styles/
-    └── _variables.scss                 # Variáveis Sass globais
-db.json                                 # Banco de dados do JSON Server
+    └── _variables.scss                     # Variáveis Sass globais
+db.json                                     # Banco de dados do JSON Server
 ```
 
 ---
@@ -115,7 +143,7 @@ db.json                                 # Banco de dados do JSON Server
 - Toasts com [ngx-toastr](https://github.com/scttcper/ngx-toastr) para sucesso, aviso e erro
 - Serviço `ToastService` centralizando todos os calls ao Toastr
 
-### Estilo e UX
+### UI/UX
 
 - Angular Material com tema customizado
 - Arquivo `_variables.scss` centralizado com todas as cores, bordas e transições do projeto
@@ -126,13 +154,101 @@ db.json                                 # Banco de dados do JSON Server
 
 ---
 
+## Decisões técnicas
+
+### 1 - Ferramentas Frontend
+
+Para frontend, seguindo os requisitos do teste, escolhi o framework Angular na versão mais recente para poder demonstrar o uso de novos recursos como a API reativa `Signals` e as `Template Syntax`, Para o auxilio de UI escolhi o `Angular Material` por ser mais popular e prestar total integração com Angular.
+
+### 2 - JSON Server como back-end de persistência
+
+Decidi utilizar [JSON Server](https://github.com/typicode/json-server) pois já tenho um conhecimento previo da ferramenta, o principal motivo da escolha se deu pelo fato de poder simular api REST e demonstrar no teste com muita pouca configuração as comunicações HTTP. Devido a essa motivação alternativas como `localStorage` e  `IndexedDB` tornaria a implementação mais simples.
+
+
+**Alternativas consideradas:**
+- `localStorage` — simples, mas síncrono e sem interface HTTP; tornaria o `CepStorageService` menos reutilizável
+- `IndexedDB` — mais poderoso que `localStorage`, mas com API complexa e sem REST
+- API real (ex.: NestJS + PostgreSQL) — a evolução natural para um ambiente de produção, conforme mencionado em [Possíveis melhorias futuras](#possíveis-melhorias-futuras)
+
+---
+
+## Requisitos do Teste
+
+### Itens obrigatórios
+
+| Requisito | Status | Onde está implementado |
+|-----------|:------:|------------------------|
+| Angular 2+ com TypeScript | ✅ | Angular **21** com TypeScript 5.9 — versão mais recente para demonstrar Signals e nova Template Syntax |
+| HTML5 semântico | ✅ | Tags `<header>`, `<main>`, `<nav>`, `<article>`, `<section>`, `<time>`, `<dl>/<dt>/<dd>` em todos os templates |
+| CSS com SASS | ✅ | Arquivos `.scss` por componente + `src/styles/_variables.scss` centralizado |
+| Grid responsivo (Angular Material) | ✅ | Angular Material 21 + media queries para tablet (≤ 768px) e mobile (≤ 480px) |
+| Integração com ViaCEP | ✅ | `CepService` via `HttpClient` apontando para `https://viacep.com.br` |
+
+### Critérios de avaliação
+
+| Critério | Status | Onde está implementado |
+|----------|:------:|------------------------|
+| Lógica e estruturação de módulos/componentes | ✅ | `MainModule`, `HomeModule`, `CepModule` — padrão container/apresentacional com `CepFacade` e `CepState` |
+| Roteamento com Lazy Load | ✅ | `loadComponent` no `app.routes.ts` para os módulos Home e CEP |
+| Reactive Forms | ✅ | `FormControl` com `Validators.required` e `cepValidator` customizado em `CepSearch` |
+| Observables (RxJS) e gerenciamento de eventos | ✅ | `zip`, `switchMap`, `catchError`, `finalize`, `timeout` em `CepFacade`; `output<T>()` nos componentes |
+| HTML semântico e limpo | ✅ | Atributos `aria-label`, `aria-labelledby`, `role`, `scope`, `inputmode`, `autocomplete` |
+| Máscara de input e validação | ✅ | `ngx-mask` com `mask="00000-000"`; validador bloqueia CEPs com menos de 8 dígitos |
+| Layout, detalhes e responsividade | ✅ | Hover com `transition: background-color 0.2s ease`, tabela responsiva, breakpoints mobile |
+
+### Diferenciais
+
+| Diferencial | Status | Onde está implementado |
+|-------------|:------:|------------------------|
+| Angular Material | ✅ | `mat-table`, `mat-form-field`, `mat-button`, `mat-dialog`, `mat-spinner`, `mat-menu`, `mat-icon` |
+| Variáveis e pseudo-elementos SASS | ✅ | `_variables.scss` com `$color-primary`, `$border-radius`, `$transition-*`; pseudo-seletores `:hover`, `::before` |
+| Animações — loaders, transitions, hover | ✅ | `mat-spinner` no botão Buscar durante loading; `transition` nas linhas da tabela e botões |
+| Logo SCCON em SVG | ✅ | `scconlogo.svg` em `public/`, exibido no componente `Header` |
+
+### Requisitos de telas
+
+| Requisito | Status | Onde está implementado |
+|-----------|:------:|------------------------|
+| Logo SCCON (SVG) no header | ✅ | `Header` component — `<img src="scconlogo.svg">` |
+| Menu com fundo `#670000` | ✅ | `$color-primary: #670000` em `_variables.scss`, aplicado no `Header` |
+| Botões `#D7DBDD` com hover 6% mais escuro | ✅ | Tema customizado do Angular Material com `darken()` no hover |
+| Botões com cantos arredondados | ✅ | `mat-flat-button` com `border-radius` definido em `_variables.scss` |
+
+### Requisitos de arquitetura
+
+| Requisito | Status | Onde está implementado |
+|-----------|:------:|------------------------|
+| Módulo Principal | ✅ | `src/app/modules/main/` — `Layout` com `Header` e `router-outlet` |
+| Módulo Home | ✅ | `src/app/modules/home/` — página de boas-vindas carregada sob demanda |
+| Módulo CEP | ✅ | `src/app/modules/cep/` — busca, listagem, modal e facade |
+| Componentes: Header, Home, Busca, Listagem | ✅ | `Header`, `Home`, `CepSearch`, `CepList` como standalone components |
+| Lazy Load (Home e Endereços) | ✅ | `loadComponent` em `app.routes.ts` para ambos os módulos |
+| Arquitetura de serviços | ✅ | `CepService`, `CepStorageService`, `ToastService`, `CepFacade`, `CepState` |
+
+### Desafios adicionais (opcionais)
+
+| Desafio | Status | Onde está implementado |
+|---------|:------:|------------------------|
+| Botão para deletar busca | ✅ | Coluna Ação na tabela — `output<string>() excluir` em `CepList` |
+| Persistência via REST mock | ✅ | JSON Server em `http://localhost:3000/enderecos` com `db.json` na raiz |
+
+### Checklist do README (forma de entrega)
+
+| Item exigido | Status |
+|--------------|:------:|
+| Instruções de instalação | ✅ |
+| Instruções de execução/deploy | ✅ |
+| Principais recursos implementados | ✅ |
+| Decisões técnicas | ✅ |
+
+---
+
 ## Possíveis melhorias futuras
 
 - **Paginação na listagem** — adicionar `mat-paginator` na tabela de endereços para lidar com listas longas
-- **Loading no botão de busca** — exibir um spinner enquanto a requisição ao ViaCEP estiver em andamento, desabilitando o botão para evitar cliques duplos
 - **Ordenação e filtro na tabela** — integrar `MatSort` e um campo de filtro por CEP ou endereço
 - **Autenticação** — proteger as rotas com guards e um fluxo simples de login
-- **Testes unitários** — cobrir os serviços (`CepService`, `CepStorageService`) e os componentes principais com Vitest
+- **Testes end-to-end** — complementar a cobertura de testes unitários (já implementados com Vitest) com testes E2E usando Playwright ou Cypress
 - **Deploy do back-end** — substituir o JSON Server por uma API real (ex.: NestJS + banco de dados) e configurar o `environment.prod.ts` apontando para ela
 - **PWA** — adicionar suporte offline com Service Worker para cachear as últimas buscas sem conexão
 
